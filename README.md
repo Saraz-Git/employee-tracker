@@ -12,7 +12,7 @@ This command-line application is a content management system for managing a comp
 - [Test](#test)
 - [Review](#review)
 
-## Instalation
+## Installation
 
 You’ll need to use the [pg package](https://www.npmjs.com/package/pg) to connect to your PostgreSQL database and perform queries, and the [Inquirer package](https://www.npmjs.com/package/inquirer/v/8.2.4) to interact with the user via the command line.
 
