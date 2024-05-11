@@ -25,7 +25,7 @@ const init = async () => {
                 type: 'list',
                 message: 'What would you like to do?',
                 name: 'task',
-                choices: ['View All Employees', 'View Employee By Department', 'Add Employee', 'Update Employee Role', 'View All Roles', 'Add Role', 'View All Departments', 'Add Department', 'Quit'],
+                choices: ['View All Employees', 'View Employee By Department', 'Add Employee', 'Update Employee Role', 'View All Roles', 'Add Role', 'View All Departments', 'Add Department', 'View Department Budget', 'Quit'],
                 pageSize: 5,
             }]);
 
@@ -43,6 +43,11 @@ const init = async () => {
 
             if (answer.task === 'View All Departments') {
                 const response = await pool.query('SELECT * FROM department');
+                console.table(response.rows);
+            };
+
+            if (answer.task === 'View Department Budget') {
+                const response = await pool.query(`SELECT department.name AS department,SUM(role.salary) AS budget FROM employee LEFT JOIN employee e ON employee.manager_id=e.id JOIN role ON employee.role_id = role.id JOIN department ON role.department = department.id GROUP BY department.name`);
                 console.table(response.rows);
             };
 
