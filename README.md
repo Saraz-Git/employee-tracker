@@ -62,6 +62,6 @@ THEN I am prompted to select an employee to update and their new role and this i
 
 * Walkthrough video demonstrating the functionality of the application.
 
-* The URL of the GitHub repository.
+* The URL of the GitHub repository: https://github.com/Saraz-Git/employee-tracker
 
 
