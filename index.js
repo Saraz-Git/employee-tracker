@@ -25,7 +25,7 @@ const init = async () => {
                 type: 'list',
                 message: 'What would you like to do?',
                 name: 'task',
-                choices: ['View All Employees', 'Add Employee', 'Update Employee Role', 'View All Roles', 'Add Role', 'View All Departments', 'Add Department', 'Quit'],
+                choices: ['View All Employees', 'View Employee By Department', 'Add Employee', 'Update Employee Role', 'View All Roles', 'Add Role', 'View All Departments', 'Add Department', 'Quit'],
                 pageSize: 5,
             }]);
 
@@ -139,6 +139,24 @@ const init = async () => {
                 console.log(`Added ${answer.firstname} ${answer.lastname} to the database`);
             };
 
+            if (answer.task === 'View Employee By Department') {
+                const response = await pool.query('SELECT name FROM department');
+                const deptArray = (response.rows).map(el => el.name);
+                const questions = [
+                    {
+                        type: 'list',
+                        name: 'department',
+                        message: 'Which department do you want to choose?',
+                        choices: deptArray,
+                        pageSize: 5,
+                    }
+                ];
+                const answer = await inquirer.prompt(questions);
+                console.log(answer.department);
+                const result = await pool.query(`SELECT department.name AS department,employee.first_name||' '||employee.last_name AS full_name FROM employee LEFT JOIN employee e ON employee.manager_id=e.id JOIN role ON employee.role_id = role.id JOIN department ON role.department = department.id WHERE department.name = $1`, [answer.department]);
+                console.table(result.rows);
+            };
+
             if (answer.task === 'Update Employee Role') {
                 const response = await pool.query('SELECT title FROM role');
                 const roleArray = (response.rows).map(el => el.title);
@@ -166,7 +184,7 @@ const init = async () => {
                 const reaction = await pool.query(`SELECT employee.id FROM employee WHERE employee.first_name || ' ' || employee.last_name = $1`, [answer.name]);
                 const employeeid = parseInt((reaction.rows)[0].id);
                 await pool.query(`UPDATE employee SET role_id = $1 WHERE id = $2`, [roleid, employeeid]);
-            }
+            };
         }
     } catch (err) {
         console.log(err);
