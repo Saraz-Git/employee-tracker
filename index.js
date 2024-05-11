@@ -3,6 +3,7 @@ require('dotenv').config();
 const inquirer = require("inquirer");
 const { Pool } = require('pg');
 const figlet = require("figlet");
+const colors = require('colors');
 
 //Connect to database
 const pool = new Pool(
@@ -17,7 +18,7 @@ const pool = new Pool(
 const init = async () => {
     try {
         ascii = await figlet("Employee Tracker");
-        console.log(ascii);
+        console.log(colors.grey(ascii));
 
         let stop = false;
         while (!stop) {
@@ -65,7 +66,7 @@ const init = async () => {
 
                 if (!deptArray.includes(answer.name)) {
                     await pool.query(`INSERT INTO department (name) VALUES ($1)`, [answer.name]);
-                    console.log(`Added ${answer.name} to the database`);
+                    console.log(colors.grey(`Added ${answer.name} to the database`));
                 };
             };
 
@@ -95,7 +96,7 @@ const init = async () => {
                 const result = await pool.query('SELECT department.id FROM department WHERE department.name = $1', [answer.department]);
                 const departmentId = parseInt((result.rows)[0].id);
                 await pool.query(`INSERT INTO role (title,salary,department) VALUES ($1,$2,$3)`, [answer.title, answer.salary, departmentId]);
-                console.log(`Added ${answer.title} to the database`);
+                console.log(colors.grey(`Added ${answer.title} to the database`));
             };
 
             if (answer.task === 'Add Employee') {
@@ -141,7 +142,7 @@ const init = async () => {
                 } else { managerid = null };
 
                 await pool.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ($1,$2,$3,$4)`, [answer.firstname, answer.lastname, roleid, managerid]);
-                console.log(`Added ${answer.firstname} ${answer.lastname} to the database`);
+                console.log(colors.grey(`Added ${answer.firstname} ${answer.lastname} to the database`));
             };
 
             if (answer.task === 'View Employee By Department') {
